@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -12,10 +13,18 @@ namespace Geymsla.Tests
     public class IRepositoryExtensionsTests
     {
         [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void GivenThatRepositoryIsNull_WhenTryingToGetAll_ThenArgumentNullExceptionIsThrown()
+        {
+            IRepository<Data> repo = null;
+            repo.GetAll();
+        }
+
+        [TestMethod]
         public void GivenThatZeroItemsExists_WhenTryingToGetAll_ThenReturnedListIsEmpty()
         {
             var repo = MockRepository.GenerateMock<IRepository<Data>>();
-            repo.Stub(x => x.Get(y => y)).Return(Enumerable.Empty<Data>());
+            repo.Stub(x => x.Get(Arg<Func<IQueryable<Data>, IQueryable<Data>>>.Is.Anything)).Return(Enumerable.Empty<Data>());
 
             var items = repo.GetAll();
 
@@ -26,7 +35,7 @@ namespace Geymsla.Tests
         public void GivenThatOneItemExists_WhenTryingToGetAll_ThenReturnedListContainsOneItem()
         {
             var repo = MockRepository.GenerateMock<IRepository<Data>>();
-            repo.Stub(x => x.Get(y => y)).Return(CreateNumbers(1));
+            repo.Stub(x => x.Get(Arg<Func<IQueryable<Data>, IQueryable<Data>>>.Is.Anything)).Return(CreateNumbers(1));
 
             var items = repo.GetAll();
 
@@ -37,7 +46,7 @@ namespace Geymsla.Tests
         public void GivenThatTenItemsExists_WhenTryingToGetAll_ThenReturnedListContainsTenItems()
         {
             var repo = MockRepository.GenerateMock<IRepository<Data>>();
-            repo.Stub(x => x.Get(y => y)).Return(CreateNumbers(10));
+            repo.Stub(x => x.Get(Arg<Func<IQueryable<Data>, IQueryable<Data>>>.Is.Anything)).Return(CreateNumbers(10));
 
             var items = repo.GetAll();
 

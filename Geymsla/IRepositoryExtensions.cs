@@ -27,7 +27,7 @@ namespace Geymsla
         /// <summary>
         /// Retrieves all items in the repository asynchronously.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The list consisting of all items in the repository.</returns>
         public static async Task<IEnumerable<T>> GetAllAsync<T>(this IReadOnlyRepository<T> repository) where T : class
         {
             if (repository == null) throw new ArgumentNullException(nameof(repository));
