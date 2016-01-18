@@ -6,12 +6,40 @@ using System.Threading.Tasks;
 
 namespace Geymsla
 {
-    public interface IReadOnlyRepository<T>
+    /// <summary>
+    /// Interface that provides methods for reading items.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public interface IReadOnlyRepository<T> where T : class
     {
-        IEnumerable<T> Get(Func<IQueryable<T>, IQueryable<T>> filter);
-        T Get(Func<IQueryable<T>, T> filter);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="queryFilter"></param>
+        /// <returns></returns>
+        IEnumerable<T> Get(Func<IQueryable<T>, IQueryable<T>> queryFilter);
 
-        Task<IEnumerable<T>> GetAsync(Func<IQueryable<T>, IQueryable<T>> filter, CancellationToken cancellationToken);
-        Task<T> GetAsync(Func<IQueryable<T>, T> filter, CancellationToken cancellationToken);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="queryFilter"></param>
+        /// <returns></returns>
+        T Get(Func<IQueryable<T>, T> queryFilter);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="queryFilter"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<IEnumerable<T>> GetAsync(Func<IQueryable<T>, IQueryable<T>> queryFilter, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="queryFilter"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<T> GetAsync(Func<IQueryable<T>, T> queryFilter, CancellationToken cancellationToken);
     }
 }
