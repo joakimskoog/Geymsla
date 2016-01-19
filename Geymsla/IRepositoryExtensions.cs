@@ -6,6 +6,8 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Geymsla.Collections;
+
 #pragma warning disable 1573
 
 namespace Geymsla
@@ -19,7 +21,7 @@ namespace Geymsla
         /// Retrieves all items in the repository.
         /// </summary>
         /// <returns>The list consisting of all items.</returns>
-        public static IEnumerable<T> GetAll<T,TId>(this IReadOnlyRepository<T,TId> repository) where T : class
+        public static IEnumerable<T> GetAll<T, TId>(this IReadOnlyRepository<T, TId> repository) where T : class
         {
             if (repository == null) throw new ArgumentNullException(nameof(repository));
             return repository.Get(x => x);
@@ -29,7 +31,7 @@ namespace Geymsla
         /// Retrieves all items in the repository asynchronously.
         /// </summary>
         /// <returns>The list consisting of all items.</returns>
-        public static async Task<IEnumerable<T>> GetAllAsync<T,TId>(this IReadOnlyRepository<T,TId> repository) where T : class
+        public static async Task<IEnumerable<T>> GetAllAsync<T, TId>(this IReadOnlyRepository<T, TId> repository) where T : class
         {
             if (repository == null) throw new ArgumentNullException(nameof(repository));
             return await repository.GetAllAsync(CancellationToken.None);
@@ -179,6 +181,71 @@ namespace Geymsla
 
             var items = await repository.GetAsync(x => x.Where(predicate), cancellationToken);
             return items.SingleOrDefault();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TId"></typeparam>
+        /// <param name="repository"></param>
+        /// <param name="pageNumber"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
+        public static IPagedList<T> GetPaginatedList<T, TId>(this IReadOnlyRepository<T, TId> repository, int pageNumber, int pageSize) where T : class
+        {
+            if (repository == null) throw new ArgumentNullException(nameof(repository));
+
+            var items = repository.GetAllAsQueryable();
+            return new PagedList<T>(items, pageNumber, pageSize);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TId"></typeparam>
+        /// <param name="repository"></param>
+        /// <param name="queryFilter"></param>
+        /// <param name="pageNumber"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
+        public static async Task<IPagedList<T>> GetPaginatedListAsync<T, TId>(this IReadOnlyRepository<T, TId> repository, Func<IQueryable<T>, IQueryable<T>> queryFilter, int pageNumber, int pageSize) where T : class
+        {
+            if (repository == null) throw new ArgumentNullException(nameof(repository));
+            if (queryFilter == null) throw new ArgumentNullException(nameof(queryFilter));
+
+            return await repository.GetPaginatedListAsync(queryFilter, pageNumber, pageSize, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TId"></typeparam>
+        /// <param name="repository"></param>
+        /// <param name="queryFilter"></param>
+        /// <param name="pageNumber"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public static async Task<IPagedList<T>> GetPaginatedListAsync<T, TId>(this IReadOnlyRepository<T, TId> repository, Func<IQueryable<T>, IQueryable<T>> queryFilter,
+            int pageNumber, int pageSize, CancellationToken cancellationToken) where T : class
+        {
+            if (repository == null) throw new ArgumentNullException(nameof(repository));
+            if (queryFilter == null) throw new ArgumentNullException(nameof(queryFilter));
+
+            var count = repository.GetAllAsQueryable().Count();
+            var paginationData = new PaginationData(count, pageNumber, pageSize);
+
+            var items = await repository.GetAsync(x =>
+            {
+                var query = queryFilter(x);
+                return query.Skip((paginationData.PageNumber - 1) * paginationData.PageSize).Take(paginationData.PageSize);
+
+            }, cancellationToken);
+
+            return new PagedList<T>(paginationData, items);
         }
     }
 }

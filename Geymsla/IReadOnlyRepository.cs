@@ -42,5 +42,11 @@ namespace Geymsla
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task<IEnumerable<T>> GetAsync(Func<IQueryable<T>, IQueryable<T>> queryFilter, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Retrieves all items as a queryable.
+        /// </summary>
+        /// <returns></returns>
+        IQueryable<T> GetAllAsQueryable();
     }
 }

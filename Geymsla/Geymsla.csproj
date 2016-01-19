@@ -40,6 +40,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Collections\IPagedList.cs" />
+    <Compile Include="Collections\PagedList.cs" />
+    <Compile Include="Collections\PaginationData.cs" />
     <Compile Include="IReadOnlyRepository.cs" />
     <Compile Include="IRepositoryExtensions.cs" />
     <Compile Include="IRepository.cs" />
