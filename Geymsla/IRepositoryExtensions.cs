@@ -105,7 +105,7 @@ namespace Geymsla
             if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
             var items = await repository.GetAsync(x => x.Where(predicate), cancellationToken);
-            return items.First();
+            return items.FirstOrDefault();
         }
 
         public static async Task<T> GetSingleOrDefaultAsync<T>(this IReadOnlyRepository<T> repository) where T : class

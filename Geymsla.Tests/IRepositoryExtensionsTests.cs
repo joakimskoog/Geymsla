@@ -189,7 +189,7 @@ namespace Geymsla.Tests
         #region GetFirstOrDefaultAsync
 
         [TestMethod]
-        [ExpectedException(typeof (ArgumentNullException))]
+        [ExpectedException(typeof(ArgumentNullException))]
         public async Task GivenThatRepositoryIsNull_WhenGetFirstOrDefaultAsync_ThenArgumentNullExceptionIsThrown()
         {
             IRepository<Data> repo = null;
@@ -238,6 +238,49 @@ namespace Geymsla.Tests
             IRepository<Data> repo = MockRepository.GenerateMock<IRepository<Data>>();
             Expression<Func<Data, bool>> predicate = null;
             await repo.GetFirstOrDefaultAsync(predicate, new CancellationToken(false));
+        }
+
+        [TestMethod]
+        public async Task GivenThatNoItemsExists_WhenGetFirstOrDefaultAsync_ThenReturnedItemIsNull()
+        {
+            var repo = MockRepository.GenerateMock<IRepository<Data>>();
+            Func<IQueryable<Data>, IQueryable<Data>> queryFilter = null;
+            repo.Stub(x => x.GetAsync(queryFilter, CancellationToken.None)).IgnoreArguments().Return(Task.FromResult(Enumerable.Empty<Data>()));
+
+            var item = await repo.GetFirstOrDefaultAsync();
+
+            Assert.IsNull(item);
+        }
+
+        [TestMethod]
+        public async Task GivenThatOneItemExists_WhenGetFirstOrDefaultAsyncWithNoPredicate_ThenReturnedItemIsNotNull()
+        {
+            var repo = new FakeRepository<Data>(new List<Data> { new Data(1) });
+
+            var item = await repo.GetFirstOrDefaultAsync();
+
+            Assert.IsNotNull(item);
+        }
+
+        [TestMethod]
+        public async Task GivenThatFiveItemsExists_WhenGetFirstOrDefaultAsyncWithPredicateThatReturnsOne_ThenReturnedItemIsNotNull()
+        {
+            var repo = new FakeRepository<Data>(CreateNumbers(5));
+
+            var item = await repo.GetFirstOrDefaultAsync(x => x.Number == 1);
+
+            Assert.IsNotNull(item);
+        }
+
+        [TestMethod]
+        public async Task GivenThatTwoItemsExistsWithSameNumber_WhenGetFirstOrDefaultAsyncWithPredicateOnNumber_ThenFirstItemIsReturned()
+        {
+            var repo = new FakeRepository<Data>(new List<Data> { new Data(1) { Name = "first" }, new Data(1) { Name = "second" } });
+
+            var item = await repo.GetFirstOrDefaultAsync(x => x.Number == 1);
+
+            Assert.IsNotNull(item);
+            Assert.AreEqual("first", item.Name);
         }
 
         //public static async Task<T> GetFirstOrDefaultAsync<T>(this IReadOnlyRepository<T> repository) where T : class
@@ -293,6 +336,7 @@ namespace Geymsla.Tests
     public class Data
     {
         public int Number { get; set; }
+        public string Name { get; set; }
 
         public Data(int number)
         {
