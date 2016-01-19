@@ -15,6 +15,21 @@ namespace Geymsla
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        T Get(object id);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<T> GetAsync(object id, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="queryFilter"></param>
         /// <returns></returns>
         IEnumerable<T> Get(Func<IQueryable<T>, IQueryable<T>> queryFilter);
@@ -23,23 +38,8 @@ namespace Geymsla
         /// 
         /// </summary>
         /// <param name="queryFilter"></param>
-        /// <returns></returns>
-        T Get(Func<IQueryable<T>, T> queryFilter);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="queryFilter"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task<IEnumerable<T>> GetAsync(Func<IQueryable<T>, IQueryable<T>> queryFilter, CancellationToken cancellationToken);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="queryFilter"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        Task<T> GetAsync(Func<IQueryable<T>, T> queryFilter, CancellationToken cancellationToken);
     }
 }

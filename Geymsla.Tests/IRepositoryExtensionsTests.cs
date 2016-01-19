@@ -314,12 +314,17 @@ namespace Geymsla.Tests
             _data = data;
         }
 
-        public IEnumerable<T> Get(Func<IQueryable<T>, IQueryable<T>> queryFilter)
+        public T Get(object id)
         {
             throw new NotImplementedException();
         }
 
-        public T Get(Func<IQueryable<T>, T> queryFilter)
+        public Task<T> GetAsync(object id, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<T> Get(Func<IQueryable<T>, IQueryable<T>> queryFilter)
         {
             throw new NotImplementedException();
         }
@@ -328,11 +333,6 @@ namespace Geymsla.Tests
         {
             var query = queryFilter(_data.AsQueryable());
             return Task.FromResult(query.AsEnumerable());
-        }
-
-        public Task<T> GetAsync(Func<IQueryable<T>, T> queryFilter, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
         }
     }
 

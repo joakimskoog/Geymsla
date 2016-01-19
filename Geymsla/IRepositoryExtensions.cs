@@ -126,9 +126,10 @@ namespace Geymsla
         }
 
         /// <summary>
-        /// 
+        /// Retrieves the only item, asynchronously, or a default value if there are no items. 
+        /// This method throws an exception if there is more than one item.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The only item or a default value if there are no items.</returns>
         public static async Task<T> GetSingleOrDefaultAsync<T>(this IReadOnlyRepository<T> repository) where T : class
         {
             if (repository == null) throw new ArgumentNullException(nameof(repository));
@@ -136,10 +137,11 @@ namespace Geymsla
         }
 
         /// <summary>
-        /// 
+        /// Retrieves the only item, asynchronously, or a default value if there are no items.
+        /// This method throws an exception if there is more than one item.
         /// </summary>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
+        /// <returns>The only item or a default value if there are no items.</returns>
         public static async Task<T> GetSingleOrDefaultAsync<T>(this IReadOnlyRepository<T> repository,
             CancellationToken cancellationToken) where T : class
         {
@@ -148,9 +150,10 @@ namespace Geymsla
         }
 
         /// <summary>
-        /// 
+        /// Returns the first item, asynchronously, that satisfies a condition or a default value if no such item is found.
+        /// This method throws an exception if there are more than one items satisfied by the condition.
         /// </summary>
-        /// <param name="predicate"></param>
+        /// <param name="predicate">A function to test each item for a condition.</param>
         /// <returns></returns>
         public static async Task<T> GetSingleOrDefaultAsync<T>(this IReadOnlyRepository<T> repository,
             Expression<Func<T, bool>> predicate) where T : class
@@ -162,10 +165,11 @@ namespace Geymsla
         }
 
         /// <summary>
-        /// 
+        /// Returns the first item, asynchronously, that satisfies a condition or a default value if no such item is found.
+        /// This method throws an exception if there are more than one items satisfied by the condition. 
         /// </summary>
-        /// <param name="predicate"></param>
-        /// <param name="cancellationToken"></param>
+        /// <param name="predicate">A function to test each item for a condition.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
         /// <returns></returns>
         public static async Task<T> GetSingleOrDefaultAsync<T>(this IReadOnlyRepository<T> repository,
             Expression<Func<T, bool>> predicate, CancellationToken cancellationToken) where T : class
