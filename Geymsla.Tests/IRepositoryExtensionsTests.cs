@@ -283,7 +283,11 @@ namespace Geymsla.Tests
             Assert.AreEqual("first", item.Name);
         }
 
-        //public static async Task<T> GetFirstOrDefaultAsync<T>(this IReadOnlyRepository<T> repository) where T : class
+        #endregion
+
+        #region GetSingleOrDefaultAsync
+
+
 
         #endregion
 
