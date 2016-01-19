@@ -398,17 +398,6 @@ namespace Geymsla.Tests
             Assert.AreEqual(10, pagedList.PageSize);
         }
 
-        //[TestMethod]
-        //public void GivenThatSupersetAndDataArgumentsAreCorrect_WhenCreatingPagedList_ThenPagedListPageParametersAreCorrect()
-        //{
-        //    var superset = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-        //    var pagedList = new PagedList<int>(superset.AsQueryable(), 1, 10);
-
-        //    Assert.AreEqual(1, pagedList.PageCount);
-        //    Assert.AreEqual(1, pagedList.PageNumber);
-        //    Assert.AreEqual(10, pagedList.PageSize);
-        //}
-
         #endregion
 
         private IEnumerable<Data> CreateNumbers(int numberOfItems)
