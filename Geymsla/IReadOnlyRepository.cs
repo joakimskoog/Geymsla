@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -17,36 +18,40 @@ namespace Geymsla
         /// 
         /// </summary>
         /// <param name="id"></param>
+        /// <param name="includeProperties"></param>
         /// <returns></returns>
-        T Get(TId id);
+        T Get(TId id, params Expression<Func<T, object>>[] includeProperties);
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="id"></param>
         /// <param name="cancellationToken"></param>
+        /// <param name="includeProperties"></param>
         /// <returns></returns>
-        Task<T> GetAsync(TId id, CancellationToken cancellationToken);
+        Task<T> GetAsync(TId id, CancellationToken cancellationToken, params Expression<Func<T, object>>[] includeProperties);
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="queryFilter"></param>
+        /// <param name="includeProperties"></param>
         /// <returns></returns>
-        IEnumerable<T> Get(Func<IQueryable<T>, IQueryable<T>> queryFilter);
+        IEnumerable<T> Get(Func<IQueryable<T>, IQueryable<T>> queryFilter, params Expression<Func<T, object>>[] includeProperties);
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="queryFilter"></param>
         /// <param name="cancellationToken"></param>
+        /// <param name="includeProperties"></param>
         /// <returns></returns>
-        Task<IEnumerable<T>> GetAsync(Func<IQueryable<T>, IQueryable<T>> queryFilter, CancellationToken cancellationToken);
+        Task<IEnumerable<T>> GetAsync(Func<IQueryable<T>, IQueryable<T>> queryFilter, CancellationToken cancellationToken, params Expression<Func<T, object>>[] includeProperties);
 
         /// <summary>
         /// Retrieves all items as a queryable.
         /// </summary>
         /// <returns></returns>
-        IQueryable<T> GetAllAsQueryable();
+        IQueryable<T> GetAllAsQueryable(params Expression<Func<T,object>>[] includeProperties);
     }
 }

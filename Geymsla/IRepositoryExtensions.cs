@@ -20,45 +20,49 @@ namespace Geymsla
         /// <summary>
         /// Retrieves all items in the repository.
         /// </summary>
+        /// <param name="includeProperties">Specifies the related objects to include in the results.</param>
         /// <returns>The list consisting of all items.</returns>
-        public static IEnumerable<T> GetAll<T, TId>(this IReadOnlyRepository<T, TId> repository) where T : class
+        public static IEnumerable<T> GetAll<T, TId>(this IReadOnlyRepository<T, TId> repository, params Expression<Func<T, object>>[] includeProperties) where T : class
         {
             if (repository == null) throw new ArgumentNullException(nameof(repository));
-            return repository.Get(x => x);
+            return repository.Get(x => x, includeProperties);
         }
 
         /// <summary>
         /// Retrieves all items in the repository asynchronously.
         /// </summary>
+        /// <param name="includeProperties">Specifies the related objects to include in the results.</param>
         /// <returns>The list consisting of all items.</returns>
-        public static async Task<IEnumerable<T>> GetAllAsync<T, TId>(this IReadOnlyRepository<T, TId> repository) where T : class
+        public static async Task<IEnumerable<T>> GetAllAsync<T, TId>(this IReadOnlyRepository<T, TId> repository, params Expression<Func<T, object>>[] includeProperties) where T : class
         {
             if (repository == null) throw new ArgumentNullException(nameof(repository));
-            return await repository.GetAllAsync(CancellationToken.None);
+            return await repository.GetAllAsync(CancellationToken.None, includeProperties);
         }
 
         /// <summary>
         /// Retrieves all items in the repository asynchronously.
         /// </summary>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
+        /// <param name="includeProperties">Specifies the related objects to include in the results.</param>
         /// <returns>The list consisting of all items.</returns>
-        public static async Task<IEnumerable<T>> GetAllAsync<T, TId>(this IReadOnlyRepository<T, TId> repository, CancellationToken cancellationToken) where T : class
+        public static async Task<IEnumerable<T>> GetAllAsync<T, TId>(this IReadOnlyRepository<T, TId> repository, CancellationToken cancellationToken, params Expression<Func<T, object>>[] includeProperties) where T : class
         {
             if (repository == null) throw new ArgumentNullException(nameof(repository));
-            return await repository.GetAsync(x => x, cancellationToken);
+            return await repository.GetAsync(x => x, cancellationToken, includeProperties);
         }
 
         /// <summary>
         /// Retrieves all items, asynchronously, that satisfies a condition.
         /// </summary>
         /// <param name="predicate">A function to test each item for a condition.</param>
+        /// <param name="includeProperties">Specifies the related objects to include in the results.</param>
         /// <returns>The list consisting of all items that satisfies the given condition.</returns>
-        public static async Task<IEnumerable<T>> FindByAsync<T, TId>(this IReadOnlyRepository<T, TId> repository, Expression<Func<T, bool>> predicate) where T : class
+        public static async Task<IEnumerable<T>> FindByAsync<T, TId>(this IReadOnlyRepository<T, TId> repository, Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includeProperties) where T : class
         {
             if (repository == null) throw new ArgumentNullException(nameof(repository));
             if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
-            return await repository.FindByAsync(predicate, CancellationToken.None);
+            return await repository.FindByAsync(predicate, CancellationToken.None, includeProperties);
         }
 
         /// <summary>
@@ -66,49 +70,53 @@ namespace Geymsla
         /// </summary>
         /// <param name="predicate">A function to test each item for a condition.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
+        /// <param name="includeProperties">Specifies the related objects to include in the results.</param>
         /// <returns>The list consisting of all items that satisfies the given condition.</returns>
         public static async Task<IEnumerable<T>> FindByAsync<T, TId>(this IReadOnlyRepository<T, TId> repository, Expression<Func<T, bool>> predicate,
-            CancellationToken cancellationToken) where T : class
+            CancellationToken cancellationToken, params Expression<Func<T, object>>[] includeProperties) where T : class
         {
             if (repository == null) throw new ArgumentNullException(nameof(repository));
             if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
-            return await repository.GetAsync(x => x.Where(predicate), cancellationToken);
+            return await repository.GetAsync(x => x.Where(predicate), cancellationToken, includeProperties);
         }
 
         /// <summary>
         /// Retrieves the first item, asynchronously, or a default value if there are no items.
         /// </summary>
+        /// <param name="includeProperties">Specifies the related objects to include in the results.</param>
         /// <returns>The first item, or a default value if there are no items.</returns>
-        public static async Task<T> GetFirstOrDefaultAsync<T, TId>(this IReadOnlyRepository<T, TId> repository) where T : class
+        public static async Task<T> GetFirstOrDefaultAsync<T, TId>(this IReadOnlyRepository<T, TId> repository, params Expression<Func<T, object>>[] includeProperties) where T : class
         {
             if (repository == null) throw new ArgumentNullException(nameof(repository));
-            return await repository.GetFirstOrDefaultAsync(CancellationToken.None);
+            return await repository.GetFirstOrDefaultAsync(CancellationToken.None, includeProperties);
         }
 
         /// <summary>
         /// Retrieves the first item, asynchronously, or a default value if there are no items.
         /// </summary>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
+        /// <param name="includeProperties">Specifies the related objects to include in the results.</param>
         /// <returns>The first item, or a default value if there are no items.</returns>
-        public static async Task<T> GetFirstOrDefaultAsync<T, TId>(this IReadOnlyRepository<T, TId> repository, CancellationToken cancellationToken) where T : class
+        public static async Task<T> GetFirstOrDefaultAsync<T, TId>(this IReadOnlyRepository<T, TId> repository, CancellationToken cancellationToken, params Expression<Func<T, object>>[] includeProperties) where T : class
         {
             if (repository == null) throw new ArgumentNullException(nameof(repository));
-            return await repository.GetFirstOrDefaultAsync((x => true), cancellationToken);
+            return await repository.GetFirstOrDefaultAsync((x => true), cancellationToken, includeProperties);
         }
 
         /// <summary>
         /// Retrieves the first item, asynchronously, that satisfies a condition or a default value if no such item is found.
         /// </summary>
         /// <param name="predicate">A function to test each item for a condition-</param>
+        /// <param name="includeProperties">Specifies the related objects to include in the results.</param>
         /// <returns>The first item that satisfies a the condition, or a default value if no such item is found.</returns>
         public static async Task<T> GetFirstOrDefaultAsync<T, TId>(this IReadOnlyRepository<T, TId> repository,
-            Expression<Func<T, bool>> predicate) where T : class
+            Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includeProperties) where T : class
         {
             if (repository == null) throw new ArgumentNullException(nameof(repository));
             if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
-            return await repository.GetFirstOrDefaultAsync(predicate, CancellationToken.None);
+            return await repository.GetFirstOrDefaultAsync(predicate, CancellationToken.None, includeProperties);
         }
 
         /// <summary>
@@ -116,14 +124,15 @@ namespace Geymsla
         /// </summary>
         /// <param name="predicate">A function to test each item for a condition-</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
+        /// <param name="includeProperties">Specifies the related objects to include in the results.</param>
         /// <returns>The first item that satisfies a the condition, or a default value if no such item is found.</returns>
         public static async Task<T> GetFirstOrDefaultAsync<T, TId>(this IReadOnlyRepository<T, TId> repository,
-            Expression<Func<T, bool>> predicate, CancellationToken cancellationToken) where T : class
+            Expression<Func<T, bool>> predicate, CancellationToken cancellationToken, params Expression<Func<T, object>>[] includeProperties) where T : class
         {
             if (repository == null) throw new ArgumentNullException(nameof(repository));
             if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
-            var items = await repository.GetAsync(x => x.Where(predicate), cancellationToken);
+            var items = await repository.GetAsync(x => x.Where(predicate), cancellationToken, includeProperties);
             return items.FirstOrDefault();
         }
 
@@ -131,11 +140,12 @@ namespace Geymsla
         /// Retrieves the only item, asynchronously, or a default value if there are no items. 
         /// This method throws an exception if there is more than one item.
         /// </summary>
+        /// <param name="includeProperties">Specifies the related objects to include in the results.</param>
         /// <returns>The only item or a default value if there are no items.</returns>
-        public static async Task<T> GetSingleOrDefaultAsync<T, TId>(this IReadOnlyRepository<T, TId> repository) where T : class
+        public static async Task<T> GetSingleOrDefaultAsync<T, TId>(this IReadOnlyRepository<T, TId> repository, params Expression<Func<T, object>>[] includeProperties) where T : class
         {
             if (repository == null) throw new ArgumentNullException(nameof(repository));
-            return await repository.GetSingleOrDefaultAsync(CancellationToken.None);
+            return await repository.GetSingleOrDefaultAsync(CancellationToken.None, includeProperties);
         }
 
         /// <summary>
@@ -143,12 +153,13 @@ namespace Geymsla
         /// This method throws an exception if there is more than one item.
         /// </summary>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
+        /// <param name="includeProperties">Specifies the related objects to include in the results.</param>
         /// <returns>The only item or a default value if there are no items.</returns>
         public static async Task<T> GetSingleOrDefaultAsync<T, TId>(this IReadOnlyRepository<T, TId> repository,
-            CancellationToken cancellationToken) where T : class
+            CancellationToken cancellationToken, params Expression<Func<T, object>>[] includeProperties) where T : class
         {
             if (repository == null) throw new ArgumentNullException(nameof(repository));
-            return await repository.GetSingleOrDefaultAsync((x => true), cancellationToken);
+            return await repository.GetSingleOrDefaultAsync((x => true), cancellationToken, includeProperties);
         }
 
         /// <summary>
@@ -156,14 +167,15 @@ namespace Geymsla
         /// This method throws an exception if there are more than one items satisfied by the condition.
         /// </summary>
         /// <param name="predicate">A function to test each item for a condition.</param>
+        /// <param name="includeProperties">Specifies the related objects to include in the results.</param>
         /// <returns></returns>
         public static async Task<T> GetSingleOrDefaultAsync<T, TId>(this IReadOnlyRepository<T, TId> repository,
-            Expression<Func<T, bool>> predicate) where T : class
+            Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includeProperties) where T : class
         {
             if (repository == null) throw new ArgumentNullException(nameof(repository));
             if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
-            return await repository.GetSingleOrDefaultAsync(predicate, CancellationToken.None);
+            return await repository.GetSingleOrDefaultAsync(predicate, CancellationToken.None, includeProperties);
         }
 
         /// <summary>
@@ -172,14 +184,15 @@ namespace Geymsla
         /// </summary>
         /// <param name="predicate">A function to test each item for a condition.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
+        /// <param name="includeProperties">Specifies the related objects to include in the results.</param>
         /// <returns></returns>
         public static async Task<T> GetSingleOrDefaultAsync<T, TId>(this IReadOnlyRepository<T, TId> repository,
-            Expression<Func<T, bool>> predicate, CancellationToken cancellationToken) where T : class
+            Expression<Func<T, bool>> predicate, CancellationToken cancellationToken, params Expression<Func<T, object>>[] includeProperties) where T : class
         {
             if (repository == null) throw new ArgumentNullException(nameof(repository));
             if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
-            var items = await repository.GetAsync(x => x.Where(predicate), cancellationToken);
+            var items = await repository.GetAsync(x => x.Where(predicate), cancellationToken, includeProperties);
             return items.SingleOrDefault();
         }
 
@@ -191,12 +204,13 @@ namespace Geymsla
         /// <param name="repository"></param>
         /// <param name="pageNumber"></param>
         /// <param name="pageSize"></param>
+        /// <param name="includeProperties">Specifies the related objects to include in the results.</param>
         /// <returns></returns>
-        public static IPagedList<T> GetPaginatedList<T, TId>(this IReadOnlyRepository<T, TId> repository, int pageNumber, int pageSize) where T : class
+        public static IPagedList<T> GetPaginatedList<T, TId>(this IReadOnlyRepository<T, TId> repository, int pageNumber, int pageSize, params Expression<Func<T, object>>[] includeProperties) where T : class
         {
             if (repository == null) throw new ArgumentNullException(nameof(repository));
 
-            var items = repository.GetAllAsQueryable();
+            var items = repository.GetAllAsQueryable(includeProperties);
             return new PagedList<T>(items, pageNumber, pageSize);
         }
 
@@ -210,12 +224,12 @@ namespace Geymsla
         /// <param name="pageNumber"></param>
         /// <param name="pageSize"></param>
         /// <returns></returns>
-        public static async Task<IPagedList<T>> GetPaginatedListAsync<T, TId>(this IReadOnlyRepository<T, TId> repository, Func<IQueryable<T>, IQueryable<T>> queryFilter, int pageNumber, int pageSize) where T : class
+        public static async Task<IPagedList<T>> GetPaginatedListAsync<T, TId>(this IReadOnlyRepository<T, TId> repository, Func<IQueryable<T>, IQueryable<T>> queryFilter, int pageNumber, int pageSize, params Expression<Func<T, object>>[] includeProperties) where T : class
         {
             if (repository == null) throw new ArgumentNullException(nameof(repository));
             if (queryFilter == null) throw new ArgumentNullException(nameof(queryFilter));
 
-            return await repository.GetPaginatedListAsync(queryFilter, pageNumber, pageSize, CancellationToken.None);
+            return await repository.GetPaginatedListAsync(queryFilter, pageNumber, pageSize, CancellationToken.None, includeProperties);
         }
 
         /// <summary>
@@ -230,7 +244,7 @@ namespace Geymsla
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         public static async Task<IPagedList<T>> GetPaginatedListAsync<T, TId>(this IReadOnlyRepository<T, TId> repository, Func<IQueryable<T>, IQueryable<T>> queryFilter,
-            int pageNumber, int pageSize, CancellationToken cancellationToken) where T : class
+            int pageNumber, int pageSize, CancellationToken cancellationToken, params Expression<Func<T, object>>[] includeProperties) where T : class
         {
             if (repository == null) throw new ArgumentNullException(nameof(repository));
             if (queryFilter == null) throw new ArgumentNullException(nameof(queryFilter));
@@ -243,7 +257,7 @@ namespace Geymsla
                 var query = queryFilter(x);
                 return query.Skip((paginationData.PageNumber - 1) * paginationData.PageSize).Take(paginationData.PageSize);
 
-            }, cancellationToken);
+            }, cancellationToken, includeProperties);
 
             return new PagedList<T>(paginationData, items);
         }

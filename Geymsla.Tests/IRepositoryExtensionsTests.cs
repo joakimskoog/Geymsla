@@ -30,7 +30,7 @@ namespace Geymsla.Tests
         public void GivenThatZeroItemsExists_WhenTryingToGetAll_ThenReturnedListIsEmpty()
         {
             var repo = MockRepository.GenerateMock<IRepository<Data, int>>();
-            repo.Stub(x => x.Get(Arg<Func<IQueryable<Data>, IQueryable<Data>>>.Is.Anything)).Return(Enumerable.Empty<Data>());
+            repo.Stub(x => x.Get(Arg<Func<IQueryable<Data>, IQueryable<Data>>>.Is.Anything, Arg<Expression<Func<Data, object>>[]>.Is.Anything)).Return(Enumerable.Empty<Data>());
 
             var items = repo.GetAll();
 
@@ -41,7 +41,7 @@ namespace Geymsla.Tests
         public void GivenThatOneItemExists_WhenTryingToGetAll_ThenReturnedListContainsOneItem()
         {
             var repo = MockRepository.GenerateMock<IRepository<Data, int>>();
-            repo.Stub(x => x.Get(Arg<Func<IQueryable<Data>, IQueryable<Data>>>.Is.Anything)).Return(CreateNumbers(1));
+            repo.Stub(x => x.Get(Arg<Func<IQueryable<Data>, IQueryable<Data>>>.Is.Anything, Arg<Expression<Func<Data, object>>[]>.Is.Anything)).Return(CreateNumbers(1));
 
             var items = repo.GetAll();
 
@@ -52,7 +52,7 @@ namespace Geymsla.Tests
         public void GivenThatTenItemsExists_WhenTryingToGetAll_ThenReturnedListContainsTenItems()
         {
             var repo = MockRepository.GenerateMock<IRepository<Data, int>>();
-            repo.Stub(x => x.Get(Arg<Func<IQueryable<Data>, IQueryable<Data>>>.Is.Anything)).Return(CreateNumbers(10));
+            repo.Stub(x => x.Get(Arg<Func<IQueryable<Data>, IQueryable<Data>>>.Is.Anything, Arg<Expression<Func<Data, object>>[]>.Is.Anything)).Return(CreateNumbers(10));
 
             var items = repo.GetAll();
 
@@ -83,7 +83,7 @@ namespace Geymsla.Tests
         public async Task GivenThatNoItemsExists_WhenGetAllAsync_ThenReturnedListIsEmpty()
         {
             var repo = MockRepository.GenerateMock<IRepository<Data, int>>();
-            repo.Stub(x => x.GetAsync(Arg<Func<IQueryable<Data>, IQueryable<Data>>>.Is.Anything, Arg<CancellationToken>.Is.Anything))
+            repo.Stub(x => x.GetAsync(Arg<Func<IQueryable<Data>, IQueryable<Data>>>.Is.Anything, Arg<CancellationToken>.Is.Anything, Arg<Expression<Func<Data, object>>[]>.Is.Anything))
                 .Return(Task.FromResult(Enumerable.Empty<Data>()));
 
             var items = await repo.GetAllAsync();
@@ -95,7 +95,7 @@ namespace Geymsla.Tests
         public async Task GivenThatNoItemsExists_WhenGetAllAsyncWithCancellationToken_ThenReturnedListIsEmpty()
         {
             var repo = MockRepository.GenerateMock<IRepository<Data, int>>();
-            repo.Stub(x => x.GetAsync(Arg<Func<IQueryable<Data>, IQueryable<Data>>>.Is.Anything, Arg<CancellationToken>.Is.Anything))
+            repo.Stub(x => x.GetAsync(Arg<Func<IQueryable<Data>, IQueryable<Data>>>.Is.Anything, Arg<CancellationToken>.Is.Anything, Arg<Expression <Func <Data, object >>[]>.Is.Anything))
                 .Return(Task.FromResult(Enumerable.Empty<Data>()));
 
             var items = await repo.GetAllAsync(new CancellationToken(false));
@@ -107,7 +107,7 @@ namespace Geymsla.Tests
         public async Task GivenThatOneItemExists_WhenGetAllAsync_ThenReturnedListContainsOne()
         {
             var repo = MockRepository.GenerateMock<IRepository<Data, int>>();
-            repo.Stub(x => x.GetAsync(Arg<Func<IQueryable<Data>, IQueryable<Data>>>.Is.Anything, Arg<CancellationToken>.Is.Anything))
+            repo.Stub(x => x.GetAsync(Arg<Func<IQueryable<Data>, IQueryable<Data>>>.Is.Anything, Arg<CancellationToken>.Is.Anything, Arg<Expression<Func<Data, object>>[]>.Is.Anything))
                 .Return(Task.FromResult(CreateNumbers(1)));
 
             var items = await repo.GetAllAsync();
@@ -119,7 +119,7 @@ namespace Geymsla.Tests
         public async Task GivenThatTenItemsExists_WhenGetAllAsync_ThenReturnedListContainsTen()
         {
             var repo = MockRepository.GenerateMock<IRepository<Data, int>>();
-            repo.Stub(x => x.GetAsync(Arg<Func<IQueryable<Data>, IQueryable<Data>>>.Is.Anything, Arg<CancellationToken>.Is.Anything))
+            repo.Stub(x => x.GetAsync(Arg<Func<IQueryable<Data>, IQueryable<Data>>>.Is.Anything, Arg<CancellationToken>.Is.Anything, Arg<Expression<Func<Data, object>>[]>.Is.Anything))
                 .Return(Task.FromResult(CreateNumbers(10)));
 
             var items = await repo.GetAllAsync();
@@ -323,7 +323,7 @@ namespace Geymsla.Tests
         public async Task GivenThatNoItemsExists_WhenGetSingleOrDefaultAsync_ThenReturnedItemIsNull()
         {
             var repo = MockRepository.GenerateMock<IRepository<Data, int>>();
-            repo.Stub(x => x.GetAsync(Arg<Func<IQueryable<Data>, IQueryable<Data>>>.Is.Anything, Arg<CancellationToken>.Is.Anything))
+            repo.Stub(x => x.GetAsync(Arg<Func<IQueryable<Data>, IQueryable<Data>>>.Is.Anything, Arg<CancellationToken>.Is.Anything, Arg<Expression<Func<Data, object>>[]>.Is.Anything))
                 .IgnoreArguments()
                 .Return(Task.FromResult(Enumerable.Empty<Data>()));
 
@@ -373,7 +373,7 @@ namespace Geymsla.Tests
         {
             var repo = MockRepository.GenerateMock<IRepository<Data, int>>();
             repo.Stub( x => x.GetAsync(Arg<Func<IQueryable<Data>, IQueryable<Data>>>.Is.Anything,
-                        Arg<CancellationToken>.Is.Anything)).Return(Task.FromResult(Enumerable.Empty<Data>()));
+                        Arg<CancellationToken>.Is.Anything, Arg<Expression<Func<Data, object>>[]>.Is.Anything)).Return(Task.FromResult(Enumerable.Empty<Data>()));
             repo.Stub(x => x.GetAllAsQueryable()).Return(Enumerable.Empty<Data>().AsQueryable());
 
             var pagedList = await repo.GetPaginatedListAsync(x => x.OrderBy(y => y.Number), 1, 10);
@@ -423,28 +423,28 @@ namespace Geymsla.Tests
             _data = data;
         }
 
-        public T Get(int id)
+        public T Get(int id, params Expression<Func<T, object>>[] includeProperties)
         {
             throw new NotImplementedException();
         }
 
-        public Task<T> GetAsync(int id, CancellationToken cancellationToken)
+        public Task<T> GetAsync(int id, CancellationToken cancellationToken, params Expression<Func<T, object>>[] includeProperties)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<T> Get(Func<IQueryable<T>, IQueryable<T>> queryFilter)
+        public IEnumerable<T> Get(Func<IQueryable<T>, IQueryable<T>> queryFilter, params Expression<Func<T, object>>[] includeProperties)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<T>> GetAsync(Func<IQueryable<T>, IQueryable<T>> queryFilter, CancellationToken cancellationToken)
+        public Task<IEnumerable<T>> GetAsync(Func<IQueryable<T>, IQueryable<T>> queryFilter, CancellationToken cancellationToken, params Expression<Func<T, object>>[] includeProperties)
         {
             var query = queryFilter(_data.AsQueryable());
             return Task.FromResult(query.AsEnumerable());
         }
 
-        public IQueryable<T> GetAllAsQueryable()
+        public IQueryable<T> GetAllAsQueryable(params Expression<Func<T, object>>[] includeProperties)
         {
             return _data.AsQueryable();
         }
