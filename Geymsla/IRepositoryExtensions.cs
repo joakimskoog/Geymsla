@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace Geymsla
 {
     /// <summary>
-    /// Useful extension methods for use with <see cref="IReadOnlyRepository{T}"/> and <see cref="IRepository{T}"/>.
+    /// Useful extension methods for use with <see cref="IReadOnlyRepository{T,TId}"/> and <see cref="IRepository{T,TId}"/>.
     /// </summary>
     public static class IRepositoryExtensions
     {
@@ -19,7 +19,7 @@ namespace Geymsla
         /// Retrieves all items in the repository.
         /// </summary>
         /// <returns>The list consisting of all items.</returns>
-        public static IEnumerable<T> GetAll<T>(this IReadOnlyRepository<T> repository) where T : class
+        public static IEnumerable<T> GetAll<T,TId>(this IReadOnlyRepository<T,TId> repository) where T : class
         {
             if (repository == null) throw new ArgumentNullException(nameof(repository));
             return repository.Get(x => x);
@@ -29,7 +29,7 @@ namespace Geymsla
         /// Retrieves all items in the repository asynchronously.
         /// </summary>
         /// <returns>The list consisting of all items.</returns>
-        public static async Task<IEnumerable<T>> GetAllAsync<T>(this IReadOnlyRepository<T> repository) where T : class
+        public static async Task<IEnumerable<T>> GetAllAsync<T,TId>(this IReadOnlyRepository<T,TId> repository) where T : class
         {
             if (repository == null) throw new ArgumentNullException(nameof(repository));
             return await repository.GetAllAsync(CancellationToken.None);
@@ -40,7 +40,7 @@ namespace Geymsla
         /// </summary>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
         /// <returns>The list consisting of all items.</returns>
-        public static async Task<IEnumerable<T>> GetAllAsync<T>(this IReadOnlyRepository<T> repository, CancellationToken cancellationToken) where T : class
+        public static async Task<IEnumerable<T>> GetAllAsync<T, TId>(this IReadOnlyRepository<T, TId> repository, CancellationToken cancellationToken) where T : class
         {
             if (repository == null) throw new ArgumentNullException(nameof(repository));
             return await repository.GetAsync(x => x, cancellationToken);
@@ -51,7 +51,7 @@ namespace Geymsla
         /// </summary>
         /// <param name="predicate">A function to test each item for a condition.</param>
         /// <returns>The list consisting of all items that satisfies the given condition.</returns>
-        public static async Task<IEnumerable<T>> FindByAsync<T>(this IReadOnlyRepository<T> repository, Expression<Func<T, bool>> predicate) where T : class
+        public static async Task<IEnumerable<T>> FindByAsync<T, TId>(this IReadOnlyRepository<T, TId> repository, Expression<Func<T, bool>> predicate) where T : class
         {
             if (repository == null) throw new ArgumentNullException(nameof(repository));
             if (predicate == null) throw new ArgumentNullException(nameof(predicate));
@@ -65,7 +65,7 @@ namespace Geymsla
         /// <param name="predicate">A function to test each item for a condition.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
         /// <returns>The list consisting of all items that satisfies the given condition.</returns>
-        public static async Task<IEnumerable<T>> FindByAsync<T>(this IReadOnlyRepository<T> repository, Expression<Func<T, bool>> predicate,
+        public static async Task<IEnumerable<T>> FindByAsync<T, TId>(this IReadOnlyRepository<T, TId> repository, Expression<Func<T, bool>> predicate,
             CancellationToken cancellationToken) where T : class
         {
             if (repository == null) throw new ArgumentNullException(nameof(repository));
@@ -78,7 +78,7 @@ namespace Geymsla
         /// Retrieves the first item, asynchronously, or a default value if there are no items.
         /// </summary>
         /// <returns>The first item, or a default value if there are no items.</returns>
-        public static async Task<T> GetFirstOrDefaultAsync<T>(this IReadOnlyRepository<T> repository) where T : class
+        public static async Task<T> GetFirstOrDefaultAsync<T, TId>(this IReadOnlyRepository<T, TId> repository) where T : class
         {
             if (repository == null) throw new ArgumentNullException(nameof(repository));
             return await repository.GetFirstOrDefaultAsync(CancellationToken.None);
@@ -89,7 +89,7 @@ namespace Geymsla
         /// </summary>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
         /// <returns>The first item, or a default value if there are no items.</returns>
-        public static async Task<T> GetFirstOrDefaultAsync<T>(this IReadOnlyRepository<T> repository, CancellationToken cancellationToken) where T : class
+        public static async Task<T> GetFirstOrDefaultAsync<T, TId>(this IReadOnlyRepository<T, TId> repository, CancellationToken cancellationToken) where T : class
         {
             if (repository == null) throw new ArgumentNullException(nameof(repository));
             return await repository.GetFirstOrDefaultAsync((x => true), cancellationToken);
@@ -100,7 +100,7 @@ namespace Geymsla
         /// </summary>
         /// <param name="predicate">A function to test each item for a condition-</param>
         /// <returns>The first item that satisfies a the condition, or a default value if no such item is found.</returns>
-        public static async Task<T> GetFirstOrDefaultAsync<T>(this IReadOnlyRepository<T> repository,
+        public static async Task<T> GetFirstOrDefaultAsync<T, TId>(this IReadOnlyRepository<T, TId> repository,
             Expression<Func<T, bool>> predicate) where T : class
         {
             if (repository == null) throw new ArgumentNullException(nameof(repository));
@@ -115,7 +115,7 @@ namespace Geymsla
         /// <param name="predicate">A function to test each item for a condition-</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
         /// <returns>The first item that satisfies a the condition, or a default value if no such item is found.</returns>
-        public static async Task<T> GetFirstOrDefaultAsync<T>(this IReadOnlyRepository<T> repository,
+        public static async Task<T> GetFirstOrDefaultAsync<T, TId>(this IReadOnlyRepository<T, TId> repository,
             Expression<Func<T, bool>> predicate, CancellationToken cancellationToken) where T : class
         {
             if (repository == null) throw new ArgumentNullException(nameof(repository));
@@ -130,7 +130,7 @@ namespace Geymsla
         /// This method throws an exception if there is more than one item.
         /// </summary>
         /// <returns>The only item or a default value if there are no items.</returns>
-        public static async Task<T> GetSingleOrDefaultAsync<T>(this IReadOnlyRepository<T> repository) where T : class
+        public static async Task<T> GetSingleOrDefaultAsync<T, TId>(this IReadOnlyRepository<T, TId> repository) where T : class
         {
             if (repository == null) throw new ArgumentNullException(nameof(repository));
             return await repository.GetSingleOrDefaultAsync(CancellationToken.None);
@@ -142,7 +142,7 @@ namespace Geymsla
         /// </summary>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
         /// <returns>The only item or a default value if there are no items.</returns>
-        public static async Task<T> GetSingleOrDefaultAsync<T>(this IReadOnlyRepository<T> repository,
+        public static async Task<T> GetSingleOrDefaultAsync<T, TId>(this IReadOnlyRepository<T, TId> repository,
             CancellationToken cancellationToken) where T : class
         {
             if (repository == null) throw new ArgumentNullException(nameof(repository));
@@ -155,7 +155,7 @@ namespace Geymsla
         /// </summary>
         /// <param name="predicate">A function to test each item for a condition.</param>
         /// <returns></returns>
-        public static async Task<T> GetSingleOrDefaultAsync<T>(this IReadOnlyRepository<T> repository,
+        public static async Task<T> GetSingleOrDefaultAsync<T, TId>(this IReadOnlyRepository<T, TId> repository,
             Expression<Func<T, bool>> predicate) where T : class
         {
             if (repository == null) throw new ArgumentNullException(nameof(repository));
@@ -171,7 +171,7 @@ namespace Geymsla
         /// <param name="predicate">A function to test each item for a condition.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
         /// <returns></returns>
-        public static async Task<T> GetSingleOrDefaultAsync<T>(this IReadOnlyRepository<T> repository,
+        public static async Task<T> GetSingleOrDefaultAsync<T, TId>(this IReadOnlyRepository<T, TId> repository,
             Expression<Func<T, bool>> predicate, CancellationToken cancellationToken) where T : class
         {
             if (repository == null) throw new ArgumentNullException(nameof(repository));

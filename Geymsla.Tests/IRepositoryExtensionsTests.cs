@@ -22,14 +22,14 @@ namespace Geymsla.Tests
         [ExpectedException(typeof(ArgumentNullException))]
         public void GivenThatRepositoryIsNull_WhenTryingToGetAll_ThenArgumentNullExceptionIsThrown()
         {
-            IRepository<Data> repo = null;
+            IRepository<Data,int> repo = null;
             repo.GetAll();
         }
 
         [TestMethod]
         public void GivenThatZeroItemsExists_WhenTryingToGetAll_ThenReturnedListIsEmpty()
         {
-            var repo = MockRepository.GenerateMock<IRepository<Data>>();
+            var repo = MockRepository.GenerateMock<IRepository<Data,int>>();
             repo.Stub(x => x.Get(Arg<Func<IQueryable<Data>, IQueryable<Data>>>.Is.Anything)).Return(Enumerable.Empty<Data>());
 
             var items = repo.GetAll();
@@ -40,7 +40,7 @@ namespace Geymsla.Tests
         [TestMethod]
         public void GivenThatOneItemExists_WhenTryingToGetAll_ThenReturnedListContainsOneItem()
         {
-            var repo = MockRepository.GenerateMock<IRepository<Data>>();
+            var repo = MockRepository.GenerateMock<IRepository<Data,int>>();
             repo.Stub(x => x.Get(Arg<Func<IQueryable<Data>, IQueryable<Data>>>.Is.Anything)).Return(CreateNumbers(1));
 
             var items = repo.GetAll();
@@ -51,7 +51,7 @@ namespace Geymsla.Tests
         [TestMethod]
         public void GivenThatTenItemsExists_WhenTryingToGetAll_ThenReturnedListContainsTenItems()
         {
-            var repo = MockRepository.GenerateMock<IRepository<Data>>();
+            var repo = MockRepository.GenerateMock<IRepository<Data,int>>();
             repo.Stub(x => x.Get(Arg<Func<IQueryable<Data>, IQueryable<Data>>>.Is.Anything)).Return(CreateNumbers(10));
 
             var items = repo.GetAll();
@@ -67,7 +67,7 @@ namespace Geymsla.Tests
         [ExpectedException(typeof(ArgumentNullException))]
         public async Task GivenThatRepositoryIsNull_WhemGetAllAsync_ThenArgumentNullExceptionIsThrown()
         {
-            IRepository<Data> repo = null;
+            IRepository<Data,int> repo = null;
             await repo.GetAllAsync();
         }
 
@@ -75,14 +75,14 @@ namespace Geymsla.Tests
         [ExpectedException(typeof(ArgumentNullException))]
         public async Task GivenThatRepositoryIsNull_WhemGetAllAsyncWithCancellationToken_ThenArgumentNullExceptionIsThrown()
         {
-            IRepository<Data> repo = null;
+            IRepository<Data,int> repo = null;
             await repo.GetAllAsync(new CancellationToken(false));
         }
 
         [TestMethod]
         public async Task GivenThatNoItemsExists_WhenGetAllAsync_ThenReturnedListIsEmpty()
         {
-            var repo = MockRepository.GenerateMock<IRepository<Data>>();
+            var repo = MockRepository.GenerateMock<IRepository<Data,int>>();
             repo.Stub(x => x.GetAsync(Arg<Func<IQueryable<Data>, IQueryable<Data>>>.Is.Anything, Arg<CancellationToken>.Is.Anything))
                 .Return(Task.FromResult(Enumerable.Empty<Data>()));
 
@@ -94,7 +94,7 @@ namespace Geymsla.Tests
         [TestMethod]
         public async Task GivenThatNoItemsExists_WhenGetAllAsyncWithCancellationToken_ThenReturnedListIsEmpty()
         {
-            var repo = MockRepository.GenerateMock<IRepository<Data>>();
+            var repo = MockRepository.GenerateMock<IRepository<Data,int>>();
             repo.Stub(x => x.GetAsync(Arg<Func<IQueryable<Data>, IQueryable<Data>>>.Is.Anything, Arg<CancellationToken>.Is.Anything))
                 .Return(Task.FromResult(Enumerable.Empty<Data>()));
 
@@ -106,7 +106,7 @@ namespace Geymsla.Tests
         [TestMethod]
         public async Task GivenThatOneItemExists_WhenGetAllAsync_ThenReturnedListContainsOne()
         {
-            var repo = MockRepository.GenerateMock<IRepository<Data>>();
+            var repo = MockRepository.GenerateMock<IRepository<Data,int>>();
             repo.Stub(x => x.GetAsync(Arg<Func<IQueryable<Data>, IQueryable<Data>>>.Is.Anything, Arg<CancellationToken>.Is.Anything))
                 .Return(Task.FromResult(CreateNumbers(1)));
 
@@ -118,7 +118,7 @@ namespace Geymsla.Tests
         [TestMethod]
         public async Task GivenThatTenItemsExists_WhenGetAllAsync_ThenReturnedListContainsTen()
         {
-            var repo = MockRepository.GenerateMock<IRepository<Data>>();
+            var repo = MockRepository.GenerateMock<IRepository<Data,int>>();
             repo.Stub(x => x.GetAsync(Arg<Func<IQueryable<Data>, IQueryable<Data>>>.Is.Anything, Arg<CancellationToken>.Is.Anything))
                 .Return(Task.FromResult(CreateNumbers(10)));
 
@@ -135,7 +135,7 @@ namespace Geymsla.Tests
         [ExpectedException(typeof(ArgumentNullException))]
         public async Task GivenThatRepositoryIsNull_WhenFindByAsync_ThenArgumentNullExceptionIsThrown()
         {
-            IRepository<Data> repo = null;
+            IRepository<Data,int> repo = null;
             var items = await repo.FindByAsync(x => x.Number == 0);
         }
 
@@ -143,7 +143,7 @@ namespace Geymsla.Tests
         [ExpectedException(typeof(ArgumentNullException))]
         public async Task GivenThatRepositoryIsNull_WhenFindByAsyncWithCancellationToken_ThenArgumentNullExceptionIsThrown()
         {
-            IRepository<Data> repo = null;
+            IRepository<Data,int> repo = null;
             var items = await repo.FindByAsync(x => x.Number == 0, new CancellationToken(false));
         }
 
@@ -151,7 +151,7 @@ namespace Geymsla.Tests
         [ExpectedException(typeof(ArgumentNullException))]
         public async Task GivenThatPredicateIsNull_WhenFindByAsync_ThenArgumentNullExceptionIsThrown()
         {
-            IRepository<Data> repo = MockRepository.GenerateMock<IRepository<Data>>();
+            IRepository<Data,int> repo = MockRepository.GenerateMock<IRepository<Data,int>>();
             var items = await repo.FindByAsync(null);
         }
 
@@ -159,7 +159,7 @@ namespace Geymsla.Tests
         [ExpectedException(typeof(ArgumentNullException))]
         public async Task GivenThatPredicateIsNull_WhenFindByAsyncWithCancellationToken_ThenArgumentNullExceptionIsThrown()
         {
-            IRepository<Data> repo = MockRepository.GenerateMock<IRepository<Data>>();
+            IRepository<Data,int> repo = MockRepository.GenerateMock<IRepository<Data,int>>();
             var items = await repo.FindByAsync(null, new CancellationToken(false));
         }
 
@@ -192,7 +192,7 @@ namespace Geymsla.Tests
         [ExpectedException(typeof(ArgumentNullException))]
         public async Task GivenThatRepositoryIsNull_WhenGetFirstOrDefaultAsync_ThenArgumentNullExceptionIsThrown()
         {
-            IRepository<Data> repo = null;
+            IRepository<Data,int> repo = null;
             await repo.GetFirstOrDefaultAsync();
         }
 
@@ -200,7 +200,7 @@ namespace Geymsla.Tests
         [ExpectedException(typeof(ArgumentNullException))]
         public async Task GivenThatRepositoryIsNull_WhenGetFirstOrDefaultAsyncWithCancellationToken_ThenArgumentNullExceptionIsThrown()
         {
-            IRepository<Data> repo = null;
+            IRepository<Data,int> repo = null;
             await repo.GetFirstOrDefaultAsync(new CancellationToken(false));
         }
 
@@ -208,7 +208,7 @@ namespace Geymsla.Tests
         [ExpectedException(typeof(ArgumentNullException))]
         public async Task GivenThatRepositoryIsNull_WhenGetFirstOrDefaultAsyncWithPredicate_ThenArgumentNullExceptionIsThrown()
         {
-            IRepository<Data> repo = null;
+            IRepository<Data,int> repo = null;
             Expression<Func<Data, bool>> predicate = x => true;
             await repo.GetFirstOrDefaultAsync(predicate);
         }
@@ -217,7 +217,7 @@ namespace Geymsla.Tests
         [ExpectedException(typeof(ArgumentNullException))]
         public async Task GivenThatRepositoryIsNull_WhenGetFirstOrDefaultAsyncWithPredicateAndCancellationToken_ThenArgumentNullExceptionIsThrown()
         {
-            IRepository<Data> repo = null;
+            IRepository<Data,int> repo = null;
             Expression<Func<Data, bool>> predicate = x => true;
             await repo.GetFirstOrDefaultAsync(predicate, new CancellationToken(false));
         }
@@ -226,7 +226,7 @@ namespace Geymsla.Tests
         [ExpectedException(typeof(ArgumentNullException))]
         public async Task GivenThatPredicateIsNull_WhenGetFirstOrDefaultAsyncWithPredicate_ThenArgumentNullExceptionIsThrown()
         {
-            IRepository<Data> repo = MockRepository.GenerateMock<IRepository<Data>>();
+            IRepository<Data,int> repo = MockRepository.GenerateMock<IRepository<Data,int>>();
             Expression<Func<Data, bool>> predicate = null;
             await repo.GetFirstOrDefaultAsync(predicate);
         }
@@ -235,7 +235,7 @@ namespace Geymsla.Tests
         [ExpectedException(typeof(ArgumentNullException))]
         public async Task GivenThatPredicateIsNull_WhenGetFirstOrDefaultAsyncWithPredicateAndCancellationToken_ThenArgumentNullExceptionIsThrown()
         {
-            IRepository<Data> repo = MockRepository.GenerateMock<IRepository<Data>>();
+            IRepository<Data,int> repo = MockRepository.GenerateMock<IRepository<Data,int>>();
             Expression<Func<Data, bool>> predicate = null;
             await repo.GetFirstOrDefaultAsync(predicate, new CancellationToken(false));
         }
@@ -243,7 +243,7 @@ namespace Geymsla.Tests
         [TestMethod]
         public async Task GivenThatNoItemsExists_WhenGetFirstOrDefaultAsync_ThenReturnedItemIsNull()
         {
-            var repo = MockRepository.GenerateMock<IRepository<Data>>();
+            var repo = MockRepository.GenerateMock<IRepository<Data,int>>();
             Func<IQueryable<Data>, IQueryable<Data>> queryFilter = null;
             repo.Stub(x => x.GetAsync(queryFilter, CancellationToken.None)).IgnoreArguments().Return(Task.FromResult(Enumerable.Empty<Data>()));
 
@@ -304,7 +304,7 @@ namespace Geymsla.Tests
     }
 
     [ExcludeFromCodeCoverage]
-    public class FakeRepository<T> : IRepository<T> where T : class
+    public class FakeRepository<T> : IRepository<T,int> where T : class
     {
         private readonly IEnumerable<T> _data;
 
@@ -314,12 +314,12 @@ namespace Geymsla.Tests
             _data = data;
         }
 
-        public T Get(object id)
+        public T Get(int id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<T> GetAsync(object id, CancellationToken cancellationToken)
+        public Task<T> GetAsync(int id, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }

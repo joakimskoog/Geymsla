@@ -10,14 +10,15 @@ namespace Geymsla
     /// Interface that provides methods for reading items.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public interface IReadOnlyRepository<T> where T : class
+    /// <typeparam name="TId"></typeparam>
+    public interface IReadOnlyRepository<T, in TId> where T : class
     {
         /// <summary>
         /// 
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        T Get(object id);
+        T Get(TId id);
 
         /// <summary>
         /// 
@@ -25,7 +26,7 @@ namespace Geymsla
         /// <param name="id"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<T> GetAsync(object id, CancellationToken cancellationToken);
+        Task<T> GetAsync(TId id, CancellationToken cancellationToken);
 
         /// <summary>
         /// 

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Geymsla.EntityFramework
 {
-    public class EntityFrameworkRepository<T> : IRepository<T> where T : class
+    public class EntityFrameworkRepository<T,TId> : IRepository<T,TId> where T : class
     {
         protected readonly DbContext DbContext;
 
@@ -25,9 +25,9 @@ namespace Geymsla.EntityFramework
             return filteredEntities;
         }
 
-        public T Get(object id)
+        public T Get(TId id)
         {
-            return DbContext.Set<T>().Find(id);
+            return DbContext.Set<T>().Find((object)id);
         }
 
         public async Task<IEnumerable<T>> GetAsync(Func<IQueryable<T>, IQueryable<T>> queryFilter, CancellationToken cancellationToken)
@@ -38,9 +38,9 @@ namespace Geymsla.EntityFramework
             return await filteredEntities.ToArrayAsync(cancellationToken);
         }
 
-        public Task<T> GetAsync(object id, CancellationToken cancellationToken)
+        public Task<T> GetAsync(TId id, CancellationToken cancellationToken)
         {
-            return DbContext.Set<T>().FindAsync(cancellationToken, id);
+            return DbContext.Set<T>().FindAsync(cancellationToken, (object)id);
         }
 
         private IQueryable<T> GetAllAsQueryable()
