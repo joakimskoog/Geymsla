@@ -13,8 +13,7 @@ namespace Geymsla.EntityFramework
         {
             if (includes != null)
             {
-                query = includes.Aggregate(query,
-                          (current, include) => current.Include(include));
+                query = includes.Aggregate(query, (current, include) => current.Include(include));
             }
 
             return query;
