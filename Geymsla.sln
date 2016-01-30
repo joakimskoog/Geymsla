@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Geymsla.Tests", "Geymsla.Te
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Geymsla.EntityFramework", "Geymsla.EntityFramework\Geymsla.EntityFramework.csproj", "{E644A01D-F386-4207-B5D4-D28EFDB786DF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Geymsla.DocumentDB", "Geymsla.DocumentDB\Geymsla.DocumentDB.csproj", "{498E5265-7D80-403E-9546-7882E894FC37}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{E644A01D-F386-4207-B5D4-D28EFDB786DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E644A01D-F386-4207-B5D4-D28EFDB786DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E644A01D-F386-4207-B5D4-D28EFDB786DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{498E5265-7D80-403E-9546-7882E894FC37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{498E5265-7D80-403E-9546-7882E894FC37}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{498E5265-7D80-403E-9546-7882E894FC37}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{498E5265-7D80-403E-9546-7882E894FC37}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
