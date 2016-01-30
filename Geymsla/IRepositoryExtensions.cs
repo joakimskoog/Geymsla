@@ -18,17 +18,6 @@ namespace Geymsla
     public static class IRepositoryExtensions
     {
         /// <summary>
-        /// Retrieves all items in the repository.
-        /// </summary>
-        /// <param name="includeProperties">Specifies the related objects to include in the results.</param>
-        /// <returns>The list consisting of all items.</returns>
-        public static IEnumerable<T> GetAll<T, TId>(this IReadOnlyRepository<T, TId> repository, params Expression<Func<T, object>>[] includeProperties) where T : class
-        {
-            if (repository == null) throw new ArgumentNullException(nameof(repository));
-            return repository.Get(x => x, includeProperties);
-        }
-
-        /// <summary>
         /// Retrieves all items in the repository asynchronously.
         /// </summary>
         /// <param name="includeProperties">Specifies the related objects to include in the results.</param>

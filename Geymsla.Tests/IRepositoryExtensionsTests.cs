@@ -16,51 +16,6 @@ namespace Geymsla.Tests
     [ExcludeFromCodeCoverage]
     public class IRepositoryExtensionsTests
     {
-        #region GetAllAsQueryable
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void GivenThatRepositoryIsNull_WhenTryingToGetAll_ThenArgumentNullExceptionIsThrown()
-        {
-            IRepository<Data, int> repo = null;
-            repo.GetAll();
-        }
-
-        [TestMethod]
-        public void GivenThatZeroItemsExists_WhenTryingToGetAll_ThenReturnedListIsEmpty()
-        {
-            var repo = MockRepository.GenerateMock<IRepository<Data, int>>();
-            repo.Stub(x => x.Get(Arg<Func<IQueryable<Data>, IQueryable<Data>>>.Is.Anything, Arg<Expression<Func<Data, object>>[]>.Is.Anything)).Return(Enumerable.Empty<Data>());
-
-            var items = repo.GetAll();
-
-            Assert.AreEqual(0, items.Count());
-        }
-
-        [TestMethod]
-        public void GivenThatOneItemExists_WhenTryingToGetAll_ThenReturnedListContainsOneItem()
-        {
-            var repo = MockRepository.GenerateMock<IRepository<Data, int>>();
-            repo.Stub(x => x.Get(Arg<Func<IQueryable<Data>, IQueryable<Data>>>.Is.Anything, Arg<Expression<Func<Data, object>>[]>.Is.Anything)).Return(CreateNumbers(1));
-
-            var items = repo.GetAll();
-
-            Assert.AreEqual(1, items.Count());
-        }
-
-        [TestMethod]
-        public void GivenThatTenItemsExists_WhenTryingToGetAll_ThenReturnedListContainsTenItems()
-        {
-            var repo = MockRepository.GenerateMock<IRepository<Data, int>>();
-            repo.Stub(x => x.Get(Arg<Func<IQueryable<Data>, IQueryable<Data>>>.Is.Anything, Arg<Expression<Func<Data, object>>[]>.Is.Anything)).Return(CreateNumbers(10));
-
-            var items = repo.GetAll();
-
-            Assert.AreEqual(10, items.Count());
-        }
-
-        #endregion
-
         #region GetAllAsync
 
         [TestMethod]
