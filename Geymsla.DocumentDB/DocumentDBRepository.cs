@@ -79,8 +79,8 @@ namespace Geymsla.DocumentDB
 
     public class DocumentDBRepository<T, TId> : IRepository<T, TId> where T : class
     {
+        private readonly string _collectionIdentifier;
 
-        private string _collectionIdentifier;
         private DocumentCollection _collection;
         private DocumentCollection Collection
         {
