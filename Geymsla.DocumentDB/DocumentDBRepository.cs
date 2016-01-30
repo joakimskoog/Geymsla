@@ -113,7 +113,10 @@ namespace Geymsla.DocumentDB
 
         public IQueryable<T> GetAllAsQueryable(params Expression<Func<T, object>>[] includeProperties)
         {
-            return DocumentDBRepository.Client.CreateDocumentQuery<T>(Collection.DocumentsLink);
+            return DocumentDBRepository.Client.CreateDocumentQuery<T>(Collection.DocumentsLink, feedOptions:new FeedOptions()
+            {
+                MaxItemCount = DocumentDBRepository.Settings.MaxItemsInResponse
+            });
         }
 
         public async Task<IEnumerable<T>> GetAsync(Func<IQueryable<T>, IQueryable<T>> queryFilter, CancellationToken cancellationToken, params Expression<Func<T, object>>[] includeProperties)
