@@ -9,6 +9,13 @@ namespace Geymsla.EntityFramework
 {
     public static class IQueryableExtensions
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="query"></param>
+        /// <param name="includes"></param>
+        /// <returns></returns>
         public static IQueryable<T> IncludeMultiple<T>(this IQueryable<T> query, params Expression<Func<T, object>>[] includes) where T : class
         {
             if (includes != null)

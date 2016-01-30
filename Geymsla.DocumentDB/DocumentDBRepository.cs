@@ -11,23 +11,18 @@ using System.Threading.Tasks;
 
 namespace Geymsla.DocumentDB
 {
-    public class DocumentDBRepository<T, TId> : IRepository<T, TId> where T : class
+    public static class DocumentDBRepository
     {
-        private static object _lock = new object();
+        private static readonly object _lock = new object();
 
         private static IDocumentDBSettingsProvider _settings;
-        private static IDocumentDBSettingsProvider Settings
+        public static IDocumentDBSettingsProvider Settings
         {
             get
             {
                 lock (_lock)
                 {
-                    if (_settings == null)
-                    {
-                        _settings = new ConfigurationDocumentDBSettingsProvider();
-                    }
-
-                    return _settings;
+                    return _settings ?? (_settings = new ConfigurationDocumentDBSettingsProvider());
                 }
             }
             set
@@ -40,13 +35,13 @@ namespace Geymsla.DocumentDB
         }
 
         private static Database _database;
-        private static Database Database
+        public static Database Database
         {
             get
             {
                 if (_database == null)
                 {
-                    var db = Client.CreateDatabaseQuery().Where(d => d.Id == Settings.DatabaseIdentifier).FirstOrDefault();
+                    var db = Client.CreateDatabaseQuery().FirstOrDefault(d => d.Id == Settings.DatabaseIdentifier);
 
                     if (db == null)
                     {
@@ -61,18 +56,29 @@ namespace Geymsla.DocumentDB
         }
 
         private static DocumentClient _client;
-        private static DocumentClient Client
+        public static DocumentClient Client
         {
             get
             {
                 if (_client == null)
                 {
-                    _client = new DocumentClient(Settings.EndpointUrl, Settings.AuthorizationKey);
+                    _client = new DocumentClient(Settings.EndpointUrl, Settings.AuthorizationKey)
+                    {
+                        ConnectionPolicy =
+                        {
+                            ConnectionMode = ConnectionMode.Direct,
+                            ConnectionProtocol = Protocol.Tcp
+                        }
+                    };
                 }
 
                 return _client;
             }
         }
+    }
+
+    public class DocumentDBRepository<T, TId> : IRepository<T, TId> where T : class
+    {
 
         private string _collectionIdentifier;
         private DocumentCollection _collection;
@@ -82,13 +88,14 @@ namespace Geymsla.DocumentDB
             {
                 if (_collection == null)
                 {
-                    var col = Client.CreateDocumentCollectionQuery(Database.SelfLink)
-                        .Where(c => c.Id == _collectionIdentifier)
-                        .FirstOrDefault();
+                    var col = DocumentDBRepository.Client
+                        .CreateDocumentCollectionQuery(DocumentDBRepository.Database.SelfLink)
+                        .FirstOrDefault(c => c.Id == _collectionIdentifier);
 
                     if (col == null)
                     {
-                        col = Client.CreateDocumentCollectionAsync(Database.SelfLink, new DocumentCollection { Id = _collectionIdentifier }).Result;
+                        col = DocumentDBRepository.Client.CreateDocumentCollectionAsync(DocumentDBRepository.Database.SelfLink,
+                            new DocumentCollection { Id = _collectionIdentifier }).Result;
                     }
 
                     _collection = col;
@@ -106,7 +113,7 @@ namespace Geymsla.DocumentDB
 
         public IQueryable<T> GetAllAsQueryable(params Expression<Func<T, object>>[] includeProperties)
         {
-            return Client.CreateDocumentQuery<T>(Collection.DocumentsLink);
+            return DocumentDBRepository.Client.CreateDocumentQuery<T>(Collection.DocumentsLink);
         }
 
         public async Task<IEnumerable<T>> GetAsync(Func<IQueryable<T>, IQueryable<T>> queryFilter, CancellationToken cancellationToken, params Expression<Func<T, object>>[] includeProperties)
