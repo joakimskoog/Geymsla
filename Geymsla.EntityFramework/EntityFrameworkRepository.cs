@@ -18,11 +18,6 @@ namespace Geymsla.EntityFramework
             DbContext = dbContext;
         }
 
-        public Task<T> GetAsync(TId id, CancellationToken cancellationToken, params Expression<Func<T, object>>[] includeProperties)
-        {
-            return DbContext.Set<T>().FindAsync(cancellationToken, (object)id);
-        }
-
         public async Task<IEnumerable<T>> GetAsync(Func<IQueryable<T>, IQueryable<T>> queryFilter, CancellationToken cancellationToken, params Expression<Func<T, object>>[] includeProperties)
         {
             var entities = GetAllAsQueryable();

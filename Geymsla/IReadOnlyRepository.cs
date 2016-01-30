@@ -17,15 +17,6 @@ namespace Geymsla
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="cancellationToken"></param>
-        /// <param name="includeProperties"></param>
-        /// <returns></returns>
-        Task<T> GetAsync(TId id, CancellationToken cancellationToken, params Expression<Func<T, object>>[] includeProperties);
-
-        /// <summary>
-        /// 
-        /// </summary>
         /// <param name="queryFilter"></param>
         /// <param name="cancellationToken"></param>
         /// <param name="includeProperties"></param>
