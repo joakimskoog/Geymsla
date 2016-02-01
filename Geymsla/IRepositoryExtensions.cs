@@ -191,24 +191,6 @@ namespace Geymsla
         /// <typeparam name="T"></typeparam>
         /// <typeparam name="TId"></typeparam>
         /// <param name="repository"></param>
-        /// <param name="pageNumber"></param>
-        /// <param name="pageSize"></param>
-        /// <param name="includeProperties">Specifies the related objects to include in the results.</param>
-        /// <returns></returns>
-        public static IPagedList<T> GetPaginatedList<T, TId>(this IReadOnlyRepository<T, TId> repository, int pageNumber, int pageSize, params Expression<Func<T, object>>[] includeProperties) where T : class
-        {
-            if (repository == null) throw new ArgumentNullException(nameof(repository));
-
-            var items = repository.GetAllAsQueryable(includeProperties);
-            return new PagedList<T>(items, pageNumber, pageSize);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <typeparam name="TId"></typeparam>
-        /// <param name="repository"></param>
         /// <param name="queryFilter"></param>
         /// <param name="pageNumber"></param>
         /// <param name="pageSize"></param>
