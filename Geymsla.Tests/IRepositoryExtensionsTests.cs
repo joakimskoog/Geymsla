@@ -329,7 +329,8 @@ namespace Geymsla.Tests
             var repo = MockRepository.GenerateMock<IRepository<Data, int>>();
             repo.Stub( x => x.GetAsync(Arg<Func<IQueryable<Data>, IQueryable<Data>>>.Is.Anything,
                         Arg<CancellationToken>.Is.Anything, Arg<Expression<Func<Data, object>>[]>.Is.Anything)).Return(Task.FromResult(Enumerable.Empty<Data>()));
-            repo.Stub(x => x.GetAllAsQueryable()).Return(Enumerable.Empty<Data>().AsQueryable());
+            //repo.Stub(x => x.GetAllAsQueryable()).Return(Enumerable.Empty<Data>().AsQueryable());
+            repo.Stub(x => x.Count()).Return(0);
 
             var pagedList = await repo.GetPaginatedListAsync(x => x.OrderBy(y => y.Number), 1, 10);
 
@@ -397,6 +398,11 @@ namespace Geymsla.Tests
         {
             var query = queryFilter(_data.AsQueryable());
             return Task.FromResult(query.AsEnumerable());
+        }
+
+        public int Count()
+        {
+            return _data.Count();
         }
 
         public IQueryable<T> GetAllAsQueryable(params Expression<Func<T, object>>[] includeProperties)

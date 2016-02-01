@@ -12,6 +12,6 @@ namespace Geymsla.DocumentDB
         public string AuthorizationKey => ConfigurationManager.AppSettings["DocumentDBAuthorizationKey"];
         public string DatabaseIdentifier => ConfigurationManager.AppSettings["DocumentDBDatabaseIdentifier"];
         public int MaxItemsInResponse => int.Parse(ConfigurationManager.AppSettings["DocumentDBMaxItemsInResponse"]);
-        public Uri EndpointUrl => new Uri(ConfigurationManager.AppSettings["DocumentDBAuthorizationKey"]);
+        public Uri EndpointUrl => new Uri(ConfigurationManager.AppSettings["DocumentDBEndpointUrl"]);
     }
 }

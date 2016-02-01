@@ -41,7 +41,7 @@ namespace Geymsla.DocumentDB
             {
                 if (_database == null)
                 {
-                    var db = Client.CreateDatabaseQuery().FirstOrDefault(d => d.Id == Settings.DatabaseIdentifier);
+                    var db = Client.CreateDatabaseQuery().Where(d => d.Id == Settings.DatabaseIdentifier).AsEnumerable().FirstOrDefault();
 
                     if (db == null)
                     {
@@ -90,7 +90,7 @@ namespace Geymsla.DocumentDB
                 {
                     var col = DocumentDBRepository.Client
                         .CreateDocumentCollectionQuery(DocumentDBRepository.Database.SelfLink)
-                        .FirstOrDefault(c => c.Id == _collectionIdentifier);
+                        .Where(c => c.Id == _collectionIdentifier).AsEnumerable().FirstOrDefault();
 
                     if (col == null)
                     {
@@ -113,7 +113,7 @@ namespace Geymsla.DocumentDB
 
         public IQueryable<T> GetAllAsQueryable(params Expression<Func<T, object>>[] includeProperties)
         {
-            return DocumentDBRepository.Client.CreateDocumentQuery<T>(Collection.DocumentsLink, feedOptions:new FeedOptions()
+            return DocumentDBRepository.Client.CreateDocumentQuery<T>(Collection.DocumentsLink, feedOptions: new FeedOptions()
             {
                 MaxItemCount = DocumentDBRepository.Settings.MaxItemsInResponse
             });
