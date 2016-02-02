@@ -51,7 +51,10 @@
   <ItemGroup>
     <Compile Include="ConfigurationDocumentDBSettingsProvider.cs" />
     <Compile Include="DocumentDBRepository.cs" />
+    <Compile Include="IDocumentDBCache.cs" />
     <Compile Include="IDocumentDBSettingsProvider.cs" />
+    <Compile Include="OrderedSet.cs" />
+    <Compile Include="DefaultDocumentCache.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

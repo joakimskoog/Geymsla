@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Geymsla.Collections;
@@ -80,7 +79,9 @@ namespace Geymsla.DocumentDB
 
     public class DocumentDBRepository<T, TId> : IRepository<T, TId> where T : class
     {
+        private string _continuationToken;
         private readonly string _collectionIdentifier;
+        private readonly IDocumentDBCache<T> _documentCache;
 
         private DocumentCollection _collection;
         private DocumentCollection Collection
@@ -106,10 +107,11 @@ namespace Geymsla.DocumentDB
             }
         }
 
-        public DocumentDBRepository(string collectionIdentifier)
+        public DocumentDBRepository(string collectionIdentifier, IDocumentDBCache<T> documentCache)
         {
             if (collectionIdentifier == null) throw new ArgumentNullException(nameof(collectionIdentifier));
             _collectionIdentifier = collectionIdentifier;
+            _documentCache = documentCache;
         }
 
         public async Task<IEnumerable<T>> GetAsync(Func<IQueryable<T>, IQueryable<T>> queryFilter, CancellationToken cancellationToken, params Expression<Func<T, object>>[] includeProperties)
@@ -128,18 +130,62 @@ namespace Geymsla.DocumentDB
             return items;
         }
 
-        public Task<IPagedList<T>> GetPaginatedListAsync(Func<IQueryable<T>, IQueryable<T>> queryFilter, int pageNumber, int pageSize, CancellationToken cancellationToken,
+        private int GetCount()
+        {
+            return DocumentDBRepository.Client.CreateDocumentQuery<T>(Collection.DocumentsLink, $"SELECT * FROM {_collectionIdentifier}").AsEnumerable().Count();
+        }
+
+        public async Task<IPagedList<T>> GetPaginatedListAsync(Func<IQueryable<T>, IQueryable<T>> queryFilter, int pageNumber, int pageSize, CancellationToken cancellationToken,
             params Expression<Func<T, object>>[] includeProperties)
         {
-            throw new NotImplementedException();
+            if (_documentCache.IsExpired)
+            {
+                _documentCache.Clear();
+                _continuationToken = string.Empty;
+            }
+           
+            int count = GetCount(); //Maybe cache the count
+            var paginationData = new PaginationData(count, pageNumber, pageSize);
+            var numberOfItemsWanted = pageNumber * pageSize;
+            var numberOfItemsToRetrieveFromDatabase = Math.Max(0, numberOfItemsWanted - _documentCache.Count);
+
+
+            //If we already have the whole collection loaded into the cache, we should not try to hit the database
+            if (count == _documentCache.Count)
+            {
+                numberOfItemsToRetrieveFromDatabase = 0;
+            }
+
+            //We need to retrieve items from the database and cache them
+            if (numberOfItemsToRetrieveFromDatabase > 0)
+            {
+                var queryable = GetAllAsQueryable(new FeedOptions()
+                {
+                    MaxItemCount = numberOfItemsToRetrieveFromDatabase,
+                    RequestContinuation = _continuationToken
+                });
+                var query = queryFilter(queryable).AsDocumentQuery();
+
+                var itemsToAdd = await query.ExecuteNextAsync<T>();
+                foreach (var itemToAdd in itemsToAdd)
+                {
+                    _documentCache.Add(itemToAdd);
+                }
+
+                _continuationToken = itemsToAdd.ResponseContinuation;
+            }
+
+            return new PagedList<T>(paginationData, _documentCache.GetContents().Skip((paginationData.PageNumber - 1) * paginationData.PageSize).Take(paginationData.PageSize));
+        }
+
+        private IQueryable<T> GetAllAsQueryable(FeedOptions feedOptions)
+        {
+            return DocumentDBRepository.Client.CreateDocumentQuery<T>(Collection.DocumentsLink, feedOptions: feedOptions);
         }
 
         public IQueryable<T> GetAllAsQueryable()
         {
-            return DocumentDBRepository.Client.CreateDocumentQuery<T>(Collection.DocumentsLink, feedOptions: new FeedOptions()
-            {
-                MaxItemCount = DocumentDBRepository.Settings.MaxItemsInResponse
-            });
+            return DocumentDBRepository.Client.CreateDocumentQuery<T>(Collection.DocumentsLink);
         }
     }
 }
