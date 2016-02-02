@@ -16,7 +16,7 @@ namespace Geymsla.Collections
         public int PageSize => _paginationData.PageSize;
         public int PageCount => _paginationData.PageCount;
 
-        internal PagedList(PaginationData paginationData, IEnumerable<T> paginatedSet)
+        public PagedList(PaginationData paginationData, IEnumerable<T> paginatedSet)
         {
             if (paginationData == null) throw new ArgumentNullException(nameof(paginationData));
             if (paginatedSet == null) throw new ArgumentNullException(nameof(paginatedSet));

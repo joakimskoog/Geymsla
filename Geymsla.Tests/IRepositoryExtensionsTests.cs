@@ -6,6 +6,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Geymsla.Collections;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rhino.Mocks;
 // ReSharper disable InconsistentNaming
@@ -321,40 +322,6 @@ namespace Geymsla.Tests
 
         #endregion
 
-        #region GetPaginatedListAsync
-
-        [TestMethod]
-        public async Task GivenThatNoItemsExists_WhenGettingPaginatedListAsync_ThenFirstPageIsOneLastPageIsOnePageCountIsOneAndPageNumberIsOne()
-        {
-            var repo = MockRepository.GenerateMock<IRepository<Data, int>>();
-            repo.Stub( x => x.GetAsync(Arg<Func<IQueryable<Data>, IQueryable<Data>>>.Is.Anything,
-                        Arg<CancellationToken>.Is.Anything, Arg<Expression<Func<Data, object>>[]>.Is.Anything)).Return(Task.FromResult(Enumerable.Empty<Data>()));
-            repo.Stub(x => x.GetAllAsQueryable()).Return(Enumerable.Empty<Data>().AsQueryable());
-
-            var pagedList = await repo.GetPaginatedListAsync(x => x.OrderBy(y => y.Number), 1, 10);
-
-            Assert.AreEqual(0, pagedList.Count);
-            Assert.AreEqual(1, pagedList.FirstPageNumber);
-            Assert.AreEqual(1, pagedList.LastPageNumber);
-            Assert.AreEqual(1, pagedList.PageCount);
-            Assert.AreEqual(1, pagedList.PageNumber);
-        }
-
-        [TestMethod]
-        public async Task GivenThatSupersetAndArgumentsAreCorrect_WhenGettingPaginatedList_ThenPagedListPageParametersAreCorrect()
-        {
-            var repo = new FakeRepository<Data>(CreateNumbers(10));
-
-            var pagedList = await repo.GetPaginatedListAsync(x => x.OrderBy(y => y.Number), 1, 10);
-
-            Assert.AreEqual(10, pagedList.Count);
-            Assert.AreEqual(1, pagedList.PageCount);
-            Assert.AreEqual(1, pagedList.PageNumber);
-            Assert.AreEqual(10, pagedList.PageSize);
-        }
-
-        #endregion
-
         private IEnumerable<Data> CreateNumbers(int numberOfItems)
         {
             var numbers = new List<Data>();
@@ -397,6 +364,17 @@ namespace Geymsla.Tests
         {
             var query = queryFilter(_data.AsQueryable());
             return Task.FromResult(query.AsEnumerable());
+        }
+
+        public Task<IPagedList<T>> GetPaginatedListAsync(Func<IQueryable<T>, IQueryable<T>> queryFilter, int pageNumber, int pageSize, CancellationToken cancellationToken,
+            params Expression<Func<T, object>>[] includeProperties)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IQueryable<T> GetAllAsQueryable()
+        {
+            throw new NotImplementedException();
         }
 
         public int Count()

@@ -202,35 +202,5 @@ namespace Geymsla
 
             return await repository.GetPaginatedListAsync(queryFilter, pageNumber, pageSize, CancellationToken.None, includeProperties);
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <typeparam name="TId"></typeparam>
-        /// <param name="repository"></param>
-        /// <param name="queryFilter"></param>
-        /// <param name="pageNumber"></param>
-        /// <param name="pageSize"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public static async Task<IPagedList<T>> GetPaginatedListAsync<T, TId>(this IReadOnlyRepository<T, TId> repository, Func<IQueryable<T>, IQueryable<T>> queryFilter,
-            int pageNumber, int pageSize, CancellationToken cancellationToken, params Expression<Func<T, object>>[] includeProperties) where T : class
-        {
-            if (repository == null) throw new ArgumentNullException(nameof(repository));
-            if (queryFilter == null) throw new ArgumentNullException(nameof(queryFilter));
-
-            var count = repository.GetAllAsQueryable().Count();
-            var paginationData = new PaginationData(count, pageNumber, pageSize);
-
-            var items = await repository.GetAsync(x =>
-            {
-                var query = queryFilter(x);
-                return query.Skip((paginationData.PageNumber - 1) * paginationData.PageSize).Take(paginationData.PageSize);
-
-            }, cancellationToken, includeProperties);
-
-            return new PagedList<T>(paginationData, items);
-        }
     }
 }

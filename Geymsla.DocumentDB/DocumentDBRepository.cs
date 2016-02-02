@@ -8,6 +8,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Geymsla.Collections;
 
 namespace Geymsla.DocumentDB
 {
@@ -111,17 +112,9 @@ namespace Geymsla.DocumentDB
             _collectionIdentifier = collectionIdentifier;
         }
 
-        public IQueryable<T> GetAllAsQueryable(params Expression<Func<T, object>>[] includeProperties)
-        {
-            return DocumentDBRepository.Client.CreateDocumentQuery<T>(Collection.DocumentsLink, feedOptions: new FeedOptions()
-            {
-                MaxItemCount = DocumentDBRepository.Settings.MaxItemsInResponse
-            });
-        }
-
         public async Task<IEnumerable<T>> GetAsync(Func<IQueryable<T>, IQueryable<T>> queryFilter, CancellationToken cancellationToken, params Expression<Func<T, object>>[] includeProperties)
         {
-            var queryable = GetAllAsQueryable(includeProperties);
+            var queryable = GetAllAsQueryable();
             var filtered = queryFilter(queryable).AsDocumentQuery();
 
             var items = new List<T>();
@@ -133,6 +126,20 @@ namespace Geymsla.DocumentDB
             }
 
             return items;
+        }
+
+        public Task<IPagedList<T>> GetPaginatedListAsync(Func<IQueryable<T>, IQueryable<T>> queryFilter, int pageNumber, int pageSize, CancellationToken cancellationToken,
+            params Expression<Func<T, object>>[] includeProperties)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IQueryable<T> GetAllAsQueryable()
+        {
+            return DocumentDBRepository.Client.CreateDocumentQuery<T>(Collection.DocumentsLink, feedOptions: new FeedOptions()
+            {
+                MaxItemCount = DocumentDBRepository.Settings.MaxItemsInResponse
+            });
         }
     }
 }

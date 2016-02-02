@@ -2,7 +2,7 @@
 
 namespace Geymsla.Collections
 {
-    internal class PaginationData
+    public class PaginationData
     {
         public int PageNumber { get; }
         public int? PreviousPageNumber { get; }
