@@ -5,6 +5,8 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
+using EFSecondLevelCache;
+using EFSecondLevelCache.Contracts;
 using Geymsla.Collections;
 
 namespace Geymsla.EntityFramework
@@ -12,11 +14,14 @@ namespace Geymsla.EntityFramework
     public class EntityFrameworkRepository<T, TId> : IRepository<T, TId> where T : class
     {
         protected readonly DbContext DbContext;
+        private readonly ISecondLevelCacheSettings _secondLevelCacheSettings;
 
-        public EntityFrameworkRepository(DbContext dbContext)
+        public EntityFrameworkRepository(DbContext dbContext, ISecondLevelCacheSettings secondLevelCacheSettings)
         {
             if (dbContext == null) throw new ArgumentNullException(nameof(dbContext));
+            if (secondLevelCacheSettings == null) throw new ArgumentNullException(nameof(secondLevelCacheSettings));
             DbContext = dbContext;
+            _secondLevelCacheSettings = secondLevelCacheSettings;
         }
 
         public async Task<IEnumerable<T>> GetAsync(Func<IQueryable<T>, IQueryable<T>> queryFilter, CancellationToken cancellationToken, params Expression<Func<T, object>>[] includeProperties)
@@ -24,9 +29,14 @@ namespace Geymsla.EntityFramework
             var entities = GetAllAsQueryable();
             var filteredEntities = queryFilter(entities);
 
-            return await filteredEntities
-                .IncludeMultiple(includeProperties)
-                .ToArrayAsync(cancellationToken);
+            filteredEntities = filteredEntities.IncludeMultiple(includeProperties);
+
+            if (_secondLevelCacheSettings.ShouldUseSecondLevelCache)
+            {
+                filteredEntities = filteredEntities.Cacheable(new EFCachePolicy { AbsoluteExpiration = DateTime.UtcNow + _secondLevelCacheSettings.CacheLifeSpan });
+            }
+
+            return await filteredEntities.ToListAsync(cancellationToken);
         }
 
         public async Task<IPagedList<T>> GetPaginatedListAsync(Func<IQueryable<T>, IQueryable<T>> queryFilter,
