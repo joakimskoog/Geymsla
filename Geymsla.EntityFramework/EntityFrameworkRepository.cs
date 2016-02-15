@@ -44,7 +44,7 @@ namespace Geymsla.EntityFramework
         {
             if (queryFilter == null) throw new ArgumentNullException(nameof(queryFilter));
 
-            var count = GetAllAsQueryable().Count();
+            var count = queryFilter(GetAllAsQueryable()).Count();
             var paginationData = new PaginationData(count, pageNumber, pageSize);
 
             Func<IQueryable<T>, IQueryable<T>> paginationFunc = x =>
